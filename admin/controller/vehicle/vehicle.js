@@ -6,7 +6,7 @@ exports.getAllVehicle = async(req, res) => {
     try {
         const token = req.cookies.token;
         console.log(token);
-        const response = await axios.get(`${process.env.APP_URI}/fleet/getallvehicles`, {
+        const response = await axios.get(`${process.env.APP_URI}/fleet/getvehicles`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -53,7 +53,7 @@ exports.getvehicleById = async(req, res) => {
         // console.log('Fetching vehicle with ID:', vehicleId); // Debug log for vehicle ID
 
         // Fetch vehicle data from the external API using query parameters
-        const response = await axios.get(`${process.env.APP_URI}/admin/get-one-vehicle/${vehicleId}`, {
+        const response = await axios.get(`${process.env.APP_URI}/fleet/get-one-vehicle/${vehicleId}`, {
             headers: {
                 Authorization: `Bearer ${token}`, // Pass token in the headers
             },
@@ -91,6 +91,42 @@ exports.getvehicleById = async(req, res) => {
         res.status(500).render('fleet/components/vehicle/view-vehicle', { vehicle: null, error: 'Error fetching vehicle details.' });
     }
 };
+
+
+
+exports.getNewVehicleForm = async(req, res) => {
+    try {
+        // Extract token from request headers
+        const token = req.cookies.token;
+        console.log(token);
+        // Make a request to register the fleet
+        const response = await axios.post(`${process.env.APP_URI}/fleet/create-vehicle`, req.body, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        console.log(req.body)
+            // After successful fleet registration, redirect to the dashboard
+        return res.redirect('/manage-vehicle');
+    } catch (error) {
+        // Handle errors during the fleet registration
+        const errorMessage = error.response && error.response.data && error.response.data.message ?
+            error.response.data.message :
+            'Vehicle registration failed';
+
+        return res.status(400).json({
+            success: false,
+            message: errorMessage,
+        });
+    }
+};
+
+exports.renderNewVehicleForm = (req, res) => {
+    const token = req.cookies.token;
+    // console.log(token);
+    res.render('fleet/components/vehicle/new-vehicle', { error: null });
+};
+
 
 
 // Render edit vehicle form with current vehicle details

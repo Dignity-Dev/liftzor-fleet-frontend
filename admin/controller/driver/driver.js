@@ -42,7 +42,7 @@ exports.getNewDriverForm = async(req, res) => {
         // Handle errors during the fleet registration
         const errorMessage = error.response && error.response.data && error.response.data.message ?
             error.response.data.message :
-            'Fleet registration failed';
+            'Driver registration failed';
 
         return res.status(400).json({
             success: false,

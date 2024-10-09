@@ -8,6 +8,8 @@ const authorize = require('../../../utils/middleware/adminMiddleware');
 router.use(authorize);
 
 // Routes
+router.post('/new-vehicle', vehicleController.getNewVehicleForm);
+router.get('/new-vehicle', vehicleController.renderNewVehicleForm);
 router.get('/manage-vehicle', vehicleController.getAllVehicle);
 router.get('/vehicle/:id', vehicleController.getvehicleById);
 

@@ -4,7 +4,7 @@ const axios = require('axios');
 exports.getAllCustomers = async(req, res) => {
     try {
         const token = req.cookies.token;
-        const response = await axios.get(`${process.env.APP_URI}/fleet/users`, {
+        const response = await axios.get(`${process.env.APP_URI}/fleet/customers`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -39,7 +39,7 @@ exports.getCustomerById = async(req, res) => {
         // console.log('Fetching customer with ID:', customerId); // Debug log for customer ID
 
         // Fetch customer data from the external API using query parameters
-        const response = await axios.get(`${process.env.APP_URI}/fleet/getOneUser/${customerId}`, {
+        const response = await axios.get(`${process.env.APP_URI}/fleet/getOneCustomer/${customerId}`, {
             headers: {
                 Authorization: `Bearer ${token}`, // Pass token in the headers
             },
