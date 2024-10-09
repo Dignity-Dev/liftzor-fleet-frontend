@@ -28,15 +28,15 @@ exports.getNewDriverForm = async(req, res) => {
     try {
         // Extract token from request headers
         const token = req.cookies.token;
-        // console.log(token);
+        console.log(token);
         // Make a request to register the fleet
         const response = await axios.post(`${process.env.APP_URI}/fleet/create-driver`, req.body, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-
-        // After successful fleet registration, redirect to the dashboard
+        console.log(req.body)
+            // After successful fleet registration, redirect to the dashboard
         return res.redirect('/manage-driver');
     } catch (error) {
         // Handle errors during the fleet registration
