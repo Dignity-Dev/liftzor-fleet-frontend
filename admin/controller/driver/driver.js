@@ -24,21 +24,58 @@ exports.getAllDrivers = async(req, res) => {
 };
 
 
+// exports.getNewDriverForm = async(req, res) => {
+//     try {
+//         // Extract token from request headers
+//         const token = req.cookies.token;
+//         console.log(token);
+//         // Make a request to register the fleet
+//         const response = await axios.post(`${process.env.APP_URI}/fleet/create-driver`, req.body, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//             },
+//         });
+//         console.log(req.body)
+//             // After successful fleet registration, redirect to the dashboard
+//         return res.redirect('/manage-driver');
+//     } catch (error) {
+//         // Handle errors during the fleet registration
+//         const errorMessage = error.response && error.response.data && error.response.data.message ?
+//             error.response.data.message :
+//             'Driver registration failed';
+
+//         return res.status(400).json({
+//             success: false,
+//             message: errorMessage,
+//         });
+//     }
+// };
+
+
 exports.getNewDriverForm = async(req, res) => {
     try {
         // Extract token from request headers
         const token = req.cookies.token;
-        console.log(token);
+        console.log("Token:", token);
+
+        // Log the form data (request body) to check what data is being sent
+        console.log("Form Data (req.body):", req.body);
+
         // Make a request to register the fleet
         const response = await axios.post(`${process.env.APP_URI}/fleet/create-driver`, req.body, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        console.log(req.body)
-            // After successful fleet registration, redirect to the dashboard
+
+        console.log("API Response:", response.data);
+
+        // After successful fleet registration, redirect to the dashboard
         return res.redirect('/manage-driver');
     } catch (error) {
+        // Log full error details for debugging
+        console.error("Error details:", error.response ? error.response.data : error.message);
+
         // Handle errors during the fleet registration
         const errorMessage = error.response && error.response.data && error.response.data.message ?
             error.response.data.message :
