@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 
 
 
+
 module.exports = (app) => {
     // Body parser middleware
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,7 +15,7 @@ module.exports = (app) => {
 
     // Cookie parser middleware
     app.use(cookieParser());
-
+    app.use(methodOverride('_method'));
     // Session middleware
     app.use(session({
         secret: process.env.SECRET,

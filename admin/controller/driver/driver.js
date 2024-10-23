@@ -142,6 +142,55 @@ exports.getDriverById = async(req, res) => {
 };
 
 
+// Delete driver by ID
+exports.deleteDriver = async(req, res) => {
+    let driverId; // Declare driverId outside the try block so it's accessible everywhere
+
+    try {
+        driverId = req.params.id; // Get driver ID from the route parameters
+        const token = req.cookies.token; // Extract token from cookies
+
+        // Send DELETE request to the external API to delete the driver
+        await axios.delete(`${process.env.APP_URI}/fleet/deleteDriver/${driverId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Pass token in headers
+            }
+        });
+
+        // Redirect to the drivers list page after successful deletion
+        res.redirect('/manage-driver'); // Redirect to the list of drivers after deletion
+
+    } catch (error) {
+        console.error('Error deleting driver:', error.response ? error.response.data : error.message);
+
+        // Handle token-related errors
+        if (error.response && error.response.status === 401) {
+            console.log('Invalid or expired token, redirecting to sign-in page.');
+            return res.redirect('/sign-in');
+        }
+
+        // Handle other API errors
+        res.status(500).render('fleet/driver/drivers', { error: 'Error deleting driver.' });
+    }
+};
+
+
+
+
+// Delete a driver
+// exports.deleteDriver = async(req, res) => {
+//     try {
+//         await axios.delete(`${process.env.APP_URI}/fleet/deleteDriver/${req.params.id}`, {
+//             headers: {
+//                 Authorization: `Bearer ${req.cookies.token}`
+//             }
+//         });
+//         res.redirect('/manage-driver');
+//     } catch (error) {
+//         res.render('error', { message: 'Error deleting driver.' });
+//     }
+// };
+
 // Render edit driver form with current driver details
 // exports.getUpdateDriverForm = async(req, res) => {
 //     try {
