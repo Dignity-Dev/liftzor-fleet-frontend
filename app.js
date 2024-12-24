@@ -20,7 +20,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Static folder for assets
 app.use(express.static(path.join(__dirname, 'assets')));
-
 // start of admin route
 
 // Import Routes

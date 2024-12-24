@@ -5,7 +5,6 @@ const axios = require('axios');
 exports.getAllVehicle = async(req, res) => {
     try {
         const token = req.cookies.token;
-        console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/getvehicles`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -65,25 +64,25 @@ exports.getvehicleById = async(req, res) => {
         const vehicle = response.data.data; // Access the vehicle data
 
         if (!vehicle || vehicle.length === 0) {
-            console.log(`vehicle with ID: ${vehicleId} not found.`);
+            // console.log(`vehicle with ID: ${vehicleId} not found.`);
             return res.status(404).render('fleet/components/vehicle/view-vehicle', { vehicle: null, error: 'vehicle not found.' });
         }
 
         // Render the vehicle details page with the retrieved data
-        console.log('vehicle fetched successfully:', vehicle);
+        // console.log('vehicle fetched successfully:', vehicle);
         res.render('fleet/components/vehicle/view-vehicle', { vehicle, error: null });
 
     } catch (error) {
         console.error('Error fetching vehicle:', error.response ? error.response.data : error.message);
 
         if (error.response && error.response.status === 404) {
-            console.log(`vehicle with ID: ${vehicleId} not found.`); // vehicle ID will now be accessible
+            // console.log(`vehicle with ID: ${vehicleId} not found.`); // vehicle ID will now be accessible
             return res.status(404).render('fleet/components/vehicle/view-vehicle', { vehicle: null, error: 'vehicle not found.' });
         }
 
         // Handle token-related errors, such as expiration or invalid token
         if (error.response && error.response.status === 401) {
-            console.log('Invalid or expired token, redirecting to sign-in page.');
+            // console.log('Invalid or expired token, redirecting to sign-in page.');
             return res.redirect('/sign-in');
         }
 
@@ -93,20 +92,22 @@ exports.getvehicleById = async(req, res) => {
 };
 
 
-
 exports.getNewVehicleForm = async(req, res) => {
     try {
-        // Extract token from request headers
+        // Extract token from request cookies
         const token = req.cookies.token;
-        console.log(token);
+
+        // Log req.body to confirm if it contains data
+        console.log('Request Body:', req.body);
+
         // Make a request to register the fleet
         const response = await axios.post(`${process.env.APP_URI}/fleet/create-vehicle`, req.body, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-        console.log(req.body)
-            // After successful fleet registration, redirect to the dashboard
+
+        // After successful fleet registration, redirect to the dashboard
         return res.redirect('/manage-vehicle');
     } catch (error) {
         // Handle errors during the fleet registration
@@ -120,6 +121,7 @@ exports.getNewVehicleForm = async(req, res) => {
         });
     }
 };
+
 
 exports.renderNewVehicleForm = (req, res) => {
     const token = req.cookies.token;

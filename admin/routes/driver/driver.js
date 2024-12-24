@@ -13,12 +13,11 @@ router.get('/manage-driver', driverController.getAllDrivers);
 // Add new driver form route
 router.get('/new-driver', driverController.renderNewDriverForm);
 router.post('/new-driver', driverController.getNewDriverForm);
-
 router.get('/driver/:id', driverController.getDriverById);
+router.delete('/delete-driver/:id', driverController.deleteOneDriver);
 
 // router.get('/update-driver/:id', driverController.getUpdateDriverForm);
 // router.patch('/drivers/:id', driverController.updateDriver);
 
-router.delete('/delete-driver/:id', driverController.deleteDriver);
 
 module.exports = router;

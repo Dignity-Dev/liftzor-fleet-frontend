@@ -236,7 +236,32 @@
         </div>
     </div>
 
+    <% if (typeof success !== 'undefined' && success) {%>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '<%= success %>',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = '/manage-driver'; // Redirect after successful login
+            });
+        </script>
+        <% } %>
 
+            <!-- Show error message -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '<%= error %>',
+                    }).then(() => {
+                        window.location.href = '/new-driver'; // Redirect after successful login
+                    });
+                </script>
+                <% } %>
 
 
 </div>

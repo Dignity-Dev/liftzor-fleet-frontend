@@ -71,6 +71,8 @@ exports.assignOrderToDriver = async(req, res) => {
         await axios.put(apiUrl, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
+        console.log('orderID' + ': ' + orderID);
+        console.log('driverID' + ': ' + driverID);
 
         // Redirect to the manage orders page after successful assignment
         return res.redirect('/new-order'); // Adjust this path as necessary
@@ -93,15 +95,12 @@ exports.assignOrderToDriver = async(req, res) => {
 // Fetch pending orders from API
 exports.getPendingOrders = async(req, res) => {
     try {
-        const token = req.cookies.token; // Extract token from cookies
-        const response = await axios.get(`${process.env.APP_URI}/fleet/pending-orders`, {
-            headers: {
-                Authorization: `Bearer ${token}` // Pass token in the headers
-            }
-        });
+        // const token = req.cookies.token; // Extract token from cookies
+        const response = await axios.get(`${process.env.APP_URI}/fleet/pending`);
 
         const pendingOrders = response.data.data; // Access the pending orders data
-        if (!pendingOrders || pendingOrders.length === 0) {
+        // console.log(pendingOrders);
+        if (!pendingOrders || pendingOrders.length == 0) {
             return res.render('fleet/components/order/new-order', { pendingOrders: [], error: 'No pending orders available.' });
         }
 
