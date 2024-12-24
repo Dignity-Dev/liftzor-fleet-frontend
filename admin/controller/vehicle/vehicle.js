@@ -18,7 +18,6 @@ exports.getAllVehicle = async(req, res) => {
             if (!vehicle || vehicle.length === 0) {
                 return res.render('fleet/components/vehicle/vehicle', { vehicle: [], error: 'No vehicle available.' });
             }
-
             return res.render('fleet/components/vehicle/vehicle', { vehicle, error: null });
         } else {
             // If the status code isn't 200, consider it an error
