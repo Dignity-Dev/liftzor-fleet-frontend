@@ -34,7 +34,7 @@ exports.getOrderById = async(req, res) => {
     try {
         orderId = req.params.id; // Get order ID from the route parameters
         const token = req.cookies.token;
-
+        // console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/getOneOrder/${orderId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,

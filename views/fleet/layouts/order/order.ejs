@@ -99,14 +99,7 @@
                                                     </td>
                                                     <td><span class="badge bg-danger"> <%= order.status %></span></td>
                                                     <td>
-                                                        <div class="dropdown d-inline-block">
-                                                            <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-more-fill align-middle"></i>
-                                                    </button>
-                                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                                <li><a href="/order/<%= order.orderID %>" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View Order</a></li>
-                                                            </ul>
-                                                        </div>
+                                                        <a href="/order/<%= order.orderID %>" title="View Order"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> </a>
                                                     </td>
                                                 </tr>
 
