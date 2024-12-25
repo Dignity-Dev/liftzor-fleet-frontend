@@ -212,7 +212,7 @@ exports.getDriverById = async(req, res) => {
 exports.deleteOneDriver = async(req, res) => {
     try {
         // Extract driver ID from the route parameters
-        const driverId = req.params.id;
+        const driverId = req.params.id; // Ensure this matches the frontend
         // Extract token from cookies
         const token = req.cookies.token;
         console.log('token: ' + token);
@@ -280,8 +280,6 @@ exports.deleteOneDriver = async(req, res) => {
         `);
     }
 };
-
-
 exports.getUpdateDriverForm = async(req, res) => {
     try {
         // Render the update driver form
