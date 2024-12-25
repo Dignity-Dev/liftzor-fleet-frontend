@@ -3,33 +3,58 @@ const axios = require('axios');
 exports.getAllDrivers = async(req, res) => {
     try {
         const token = req.cookies.token;
+
+        // Allow axios to handle specific status codes (e.g., 404) as a valid response
         const response = await axios.get(`${process.env.APP_URI}/fleet/drivers`, {
             headers: {
                 Authorization: `Bearer ${token}`
+            },
+            validateStatus: (status) => {
+                // Accept status codes 200 and 404 as valid responses
+                return status === 200 || status === 404;
             }
         });
+
+        if (response.status === 404 && Array.isArray(response.data.data) && response.data.data.length === 0) {
+            // Handle empty data case
+            return res.render('fleet/components/driver/driver', {
+                drivers: [],
+                error: 'No drivers available.'
+            });
+        }
 
         const drivers = response.data.data;
 
         if (!drivers || drivers.length === 0) {
-            return res.render('fleet/components/driver/driver', { drivers: [], error: 'No drivers available.' });
+            return res.render('fleet/components/driver/driver', {
+                drivers: [],
+                error: 'No drivers available.'
+            });
         }
 
-        // Sort the drivers by 'registerDate' (either ascending or descending)
+        // Sort the drivers by 'registerDate' (assuming ISO format)
         const sortedDrivers = drivers.sort((a, b) => {
-            // Assuming registerDate is in ISO format. Adjust if it's a different format.
             return new Date(b.registerDate) - new Date(a.registerDate); // descending order
         });
 
         res.render('fleet/components/driver/driver', { drivers: sortedDrivers, error: null });
     } catch (error) {
+        // Handle unauthorized error
         if (error.response && error.response.status === 401) {
             return res.redirect('/sign-in');
         }
 
-        res.render('fleet/components/driver/driver', { drivers: [], error: 'Error fetching drivers.' });
+        // Handle other errors
+        const errorMessage = error.response && error.response.data && error.response.data.message ?
+            error.response.data.message :
+            'An unexpected error occurred while fetching drivers.';
+        res.render('fleet/components/driver/driver', {
+            drivers: [],
+            error: errorMessage
+        });
     }
 };
+
 
 
 exports.getNewDriverForm = async(req, res) => {
@@ -124,90 +149,74 @@ exports.getDriverById = async(req, res) => {
     }
 };
 
-// exports.deleteDriver = async(req, res) => {
-//     try {
-//         // Extract driver ID from the route parameters
-//         const driverId = req.params.id;
 
-//         // Extract token from cookies
-//         const token = req.cookies.token;
-//         if (!token) {
-//             console.error('Authorization token is missing.');
-//             return res.send(`
-//                 <script>
-//                     Swal.fire({
-//                         icon: 'error',
-//                         title: 'Unauthorized',
-//                         text: 'Your session has expired. Please sign in again.',
-//                         confirmButtonText: 'OK'
-//                     }).then(() => {
-//                         window.location.href = '/sign-in';
-//                     });
-//                 </script>
-//             `);
-//         }
+exports.getUpdateDriverForm = async(req, res) => {
+    try {
+        // Render the update driver form
+        res.render('fleet/driver/update-driver', { driver: {} });
+    } catch (error) {
+        // Display error using SweetAlert
+        return res.send(`
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while rendering the update driver form.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/manage-driver';
+                });
+            </script>
+        `);
+    }
+};
 
-//         // Send DELETE request to the external API to delete the driver
-//         await axios.delete(`${process.env.APP_URI}/fleet/deleteDriver/${driverId}`, {
-//             headers: {
-//                 Authorization: `Bearer ${token}`, // Pass token in headers
-//             },
-//         });
+exports.updateDriver = async(req, res) => {
+    try {
+        // Make a PATCH request to update driver details
+        await axios.patch(`${process.env.APP_URI}/fleet/drivers/${req.params.id}`, req.body, {
+            headers: {
+                Authorization: `Bearer ${req.cookies.token}`
+            }
+        });
 
-//         console.log(`Driver with ID ${driverId} deleted successfully.`);
-//         // Show success alert and redirect to the drivers list page
-//         return res.send(`
-//             <script>
-//                 Swal.fire({
-//                     icon: 'success',
-//                     title: 'Driver Deleted',
-//                     text: 'The driver has been successfully deleted.',
-//                     confirmButtonText: 'OK'
-//                 }).then(() => {
-//                     window.location.href = '/manage-driver';
-//                 });
-//             </script>
-//         `);
+        // Show success alert and redirect to the manage-driver page
+        return res.send(`
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Driver Updated',
+                    text: 'Driver details updated successfully.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/manage-driver';
+                });
+            </script>
+        `);
 
-//     } catch (error) {
-//         console.error('Error deleting driver:', error.response ? error.response.data : error.message);
+    } catch (error) {
+        console.error('Error updating driver:', error.response ? error.response.data : error.message);
 
-//         // Handle token-related errors
-//         if (error.response && error.response.status === 401) {
-//             console.log('Invalid or expired token, redirecting to sign-in page.');
-//             return res.send(`
-//                 <script>
-//                     Swal.fire({
-//                         icon: 'error',
-//                         title: 'Session Expired',
-//                         text: 'Your session has expired. Please sign in again.',
-//                         confirmButtonText: 'OK'
-//                     }).then(() => {
-//                         window.location.href = '/sign-in';
-//                     });
-//                 </script>
-//             `);
-//         }
+        // Handle API errors
+        const errorMessage = error.response && error.response.data && error.response.data.message ?
+            error.response.data.message :
+            'An error occurred while updating the driver.';
 
-//         // Handle other API errors
-//         const errorMessage = error.response && error.response.data && error.response.data.message ?
-//             error.response.data.message :
-//             'An error occurred while deleting the driver.';
-
-//         return res.send(`
-//             <script>
-//                 Swal.fire({
-//                     icon: 'error',
-//                     title: 'Error',
-//                     text: '${errorMessage}',
-//                     confirmButtonText: 'OK'
-//                 }).then(() => {
-//                     window.location.href = '/manage-driver';
-//                 });
-//             </script>
-//         `);
-//     }
-// };
+        // Show error alert with message
+        return res.send(`
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '${errorMessage}',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/manage-driver';
+                });
+            </script>
+        `);
+    }
+};
 
 exports.deleteOneDriver = async(req, res) => {
     try {
@@ -266,73 +275,6 @@ exports.deleteOneDriver = async(req, res) => {
             error.response.data.message :
             'An error occurred while deleting the driver.';
 
-        return res.send(`
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: '${errorMessage}',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = '/manage-driver';
-                });
-            </script>
-        `);
-    }
-};
-exports.getUpdateDriverForm = async(req, res) => {
-    try {
-        // Render the update driver form
-        res.render('fleet/driver/update-driver', { driver: {} });
-    } catch (error) {
-        // Display error using SweetAlert
-        return res.send(`
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while rendering the update driver form.',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = '/manage-driver';
-                });
-            </script>
-        `);
-    }
-};
-
-exports.updateDriver = async(req, res) => {
-    try {
-        // Make a PATCH request to update driver details
-        await axios.patch(`${process.env.APP_URI}/fleet/drivers/${req.params.id}`, req.body, {
-            headers: {
-                Authorization: `Bearer ${req.cookies.token}`
-            }
-        });
-
-        // Show success alert and redirect to the manage-driver page
-        return res.send(`
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Driver Updated',
-                    text: 'Driver details updated successfully.',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = '/manage-driver';
-                });
-            </script>
-        `);
-
-    } catch (error) {
-        console.error('Error updating driver:', error.response ? error.response.data : error.message);
-
-        // Handle API errors
-        const errorMessage = error.response && error.response.data && error.response.data.message ?
-            error.response.data.message :
-            'An error occurred while updating the driver.';
-
-        // Show error alert with message
         return res.send(`
             <script>
                 Swal.fire({

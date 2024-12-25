@@ -12,6 +12,9 @@ exports.renderDashboard = async(req, res) => {
             },
         });
 
+        // Log dashboard data
+        // console.log('Dashboard Data:', dash);
+
         // Fetch orders data for chart
         const { data: { data: orders } } = await axios.get(`${process.env.APP_URI}/fleet/orders`, {
             headers: {
@@ -19,6 +22,8 @@ exports.renderDashboard = async(req, res) => {
             },
         });
 
+        // Log orders data
+        // console.log('Orders Data:', orders);
 
         if (!dash) {
             return res.status(404).render('fleet/components/dashboard', { dash: null, orders: null, error: 'Dashboard not found.' });
