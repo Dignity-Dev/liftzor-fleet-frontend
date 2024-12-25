@@ -34,7 +34,6 @@ exports.getOrderById = async(req, res) => {
     try {
         orderId = req.params.id; // Get order ID from the route parameters
         const token = req.cookies.token;
-        // console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/getOneOrder/${orderId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -76,8 +75,7 @@ exports.assignOrderToDriver = async(req, res) => {
         await axios.put(apiUrl, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log('orderID' + ': ' + orderID);
-        console.log('driverID' + ': ' + driverID);
+
 
         // Redirect to the manage orders page after successful assignment
         return res.redirect('/new-order'); // Adjust this path as necessary
@@ -87,7 +85,6 @@ exports.assignOrderToDriver = async(req, res) => {
             return res.redirect('/sign-in');
         }
 
-        // console.error('Error assigning driver to order:', error.response ? error.response.data : error.message);
 
         if (error.response && error.response.status === 404) {
             return res.status(404).json({ error: 'Order or driver not found.' });
@@ -103,8 +100,7 @@ exports.getPendingOrders = async(req, res) => {
         // const token = req.cookies.token; // Extract token from cookies
         const response = await axios.get(`${process.env.APP_URI}/fleet/pending`);
 
-        const pendingOrders = response.data.data; // Access the pending orders data
-        // console.log(pendingOrders);
+        const pendingOrders = response.data.data;
         if (!pendingOrders || pendingOrders.length == 0) {
             return res.render('fleet/components/order/new-order', { pendingOrders: [], error: 'No pending orders available.' });
         }
@@ -128,25 +124,31 @@ exports.getPendingOrders = async(req, res) => {
 exports.assignedOrders = async(req, res) => {
     try {
         const token = req.cookies.token; // Extract token from cookies
-        const response = await axios.get(`${process.env.APP_URI}/fleet/assigned-orders`, {
+        const response = await axios.get(`${process.env.APP_URI}/fleet/orders`, {
             headers: {
                 Authorization: `Bearer ${token}` // Pass token in the headers
             }
         });
 
-        const orders = response.data.data;
-        console.log(orders) // Access the pending orders data
+        let orders = response.data.data;
+
+        // Filter orders with status equal to "assigned"
+        orders = orders.filter(order => order.status === 'assigned');
+
+        // Sort orders by createdAt date in descending order (most recent first)
+        orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
         if (!orders || orders.length === 0) {
             return res.render('fleet/components/order/assigned-order', { orders: [], error: 'No assigned orders available.' });
         }
 
-        // Render the pending orders page with the retrieved data
+        // Render the assigned orders page with the filtered and sorted data
         res.render('fleet/components/order/assigned-order', { orders, error: null });
     } catch (error) {
         if (error.response && error.response.status === 401) {
             return res.redirect('/sign-in'); // Redirect to sign-in on unauthorized access
         }
 
-        res.render('fleet/components/order/assigned-order', { orders: [], error: 'Error fetching pending orders.' });
+        res.render('fleet/components/order/assigned-order', { orders: [], error: 'Error fetching assigned orders.' });
     }
 }

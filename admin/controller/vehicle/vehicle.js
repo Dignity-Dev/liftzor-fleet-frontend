@@ -128,6 +128,31 @@ exports.renderNewVehicleForm = (req, res) => {
     res.render('fleet/components/vehicle/new-vehicle', { error: null });
 };
 
+exports.assignVehicleToDriver = async(req, res) => {
+    try {
+        const { vehicleID, userID } = req.body;
+        if (!vehicleID || !userID) {
+            return res.status(400).json({ error: 'Both Vehicle ID and User ID are required.' });
+        }
+
+        // Construct the API endpoint
+        const apiUrl = `${process.env.APP_URI}/admin/pairvehicle?vehicleID=${vehicleID}&userID=${userID}`;
+
+        // Assign driver to vehicle using a PUT request
+        await axios.put(apiUrl, {});
+
+        // Redirect to the manage vehicles page after successful assignment
+        return res.redirect('/manage-vehicle'); // Adjust this path as necessary
+
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            return res.status(404).json({ error: 'Vehicle or driver not found.' });
+        }
+
+        return res.status(500).json({ error: 'Failed to assign driver to the vehicle.' });
+    }
+};
+
 
 
 // Render edit vehicle form with current vehicle details
