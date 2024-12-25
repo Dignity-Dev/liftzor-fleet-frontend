@@ -102,7 +102,7 @@ exports.getPendingOrders = async(req, res) => {
 
         const pendingOrders = response.data.data;
         if (!pendingOrders || pendingOrders.length == 0) {
-            return res.render('fleet/components/order/new-order', { pendingOrders: [], error: 'No pending orders available.' });
+            return res.render('fleet/components/order/pending-order', { pendingOrders: [], error: 'No pending orders available.' });
         }
 
         // Sort the orders by 'createdAt' (either ascending or descending)
@@ -116,7 +116,7 @@ exports.getPendingOrders = async(req, res) => {
             return res.redirect('/sign-in'); // Redirect to sign-in on unauthorized access
         }
 
-        res.render('fleet/components/order/new-order', { pendingOrders: [], error: 'Error fetching pending orders.' });
+        res.render('fleet/components/order/pending-order', { pendingOrders: [], error: 'Error fetching pending orders.' });
     }
 };
 

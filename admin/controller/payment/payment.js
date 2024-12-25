@@ -4,23 +4,28 @@ const axios = require('axios');
 exports.getAllPayment = async(req, res) => {
     try {
         const token = req.cookies.token;
+        // console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/allwithdrawals`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        const payments = response.data.data;
-        console.Console(payments);
-        if (!payments || payments.length === 0) {
-            return res.render('fleet/components/payment/payment', { payments: [], error: 'No payments available.' });
-        }
+        // Check if the API call was successful (status code 200)
+        if (response.status === 200 || response.status === 404) {
+            const payment = response.data.data;
 
-        res.render('fleet/components/payment/payment', { payments, error: null });
+            if (!payment || payment.length === 0) {
+                return res.render('fleet/components/payment/payment', { payment: [], error: 'No payment available.' });
+            }
+            return res.render('fleet/components/payment/payment', { payment, error: null });
+        } else {
+            // If the status code isn't 200, consider it an error
+            return res.render('fleet/components/payment/payment', { payment: [], error: 'Error fetching payment.' });
+        }
     } catch (error) {
         if (error.response && error.response.status === 401) {
             return res.redirect('/sign-in');
         }
-
         res.render('fleet/components/payment/payment', { payments: [], error: 'Error fetching payments.' });
     }
 };

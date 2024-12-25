@@ -10,7 +10,7 @@ const authorize = require('../../../utils/middleware/adminMiddleware');
 // Routes
 router.get('/manage-order', orderController.getAllOrders);
 router.get('/order/:id', orderController.getOrderById);
-router.get('/new-order', orderController.getPendingOrders);
+router.get('/pending-order', orderController.getPendingOrders);
 router.post('/assign-driver', orderController.assignOrderToDriver);
 router.get('/assigned-order', orderController.assignedOrders);
 

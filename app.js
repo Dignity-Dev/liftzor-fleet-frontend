@@ -29,6 +29,7 @@ const driverRoutes = require('./admin/routes/driver/driver');
 const customerRoutes = require('./admin/routes/customer/customer');
 const orderRoutes = require('./admin/routes/order/order');
 const vehicleRoutes = require('./admin/routes/vehicle/vehicle');
+const paymentRoutes = require('./admin/routes/payment/payment');
 
 
 // Use Routes
@@ -38,6 +39,7 @@ app.use('/', driverRoutes);
 app.use('/', customerRoutes);
 app.use('/', orderRoutes);
 app.use('/', vehicleRoutes);
+app.use('/', paymentRoutes);
 // end of admin route
 
 
