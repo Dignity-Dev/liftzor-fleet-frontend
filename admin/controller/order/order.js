@@ -64,7 +64,7 @@ exports.assignOrderToDriver = async(req, res) => {
         if (!driverID || !orderID) {
             return res.status(400).json({ error: 'Both Driver ID and Order ID are required.' });
         }
-
+        console.log('Driver ID: ' + driverID, 'order ID: ' + orderID);
         const token = req.cookies.token;
         if (!token) return res.redirect('/sign-in');
 
@@ -78,7 +78,7 @@ exports.assignOrderToDriver = async(req, res) => {
 
 
         // Redirect to the manage orders page after successful assignment
-        return res.redirect('/new-order'); // Adjust this path as necessary
+        return res.redirect('/pending-order'); // Adjust this path as necessary
 
     } catch (error) {
         if (error.message === 'Authorization Expired') {
