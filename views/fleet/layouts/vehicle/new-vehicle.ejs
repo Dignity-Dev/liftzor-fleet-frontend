@@ -189,26 +189,31 @@
                         </div>
                     </form> -->
 
-                    <form action="/new-vehicle" method="post">
+                    <form action="/new-vehicle" method="post" enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="vehicleName" class="form-label">Vehicle Name</label>
                                     <input type="text" class="form-control" id="vehicleName" name="vehicleName" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="vehicleType" class="form-label">Vehicle Type</label>
                                     <select name="vehicleType" id="vehicleType" class="form-control" required>
                                         <option value="">Select Vehicle Type</option>
-                                        <option value="Car">Car</option>
-                                        <option value="Motorcycle">Motorcycle</option>
-                                        <option value="Truck">Truck</option>
-                                        <option value="Bus">Bus</option>
+                                        <option value="Lorry">Lorry</option>
                                         <option value="Van">Van</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Motorcycle">Motorcycle</option>
+                                        <option value="Low-bed Trailer">Low-bed Trailer</option>
+                                        <option value="Flat-bed Trailer">Flat-bed Trailer</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="vehiclePhoto">Photos of the Vehicle <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" id="vehiclePhoto" name="vehiclePhoto" required accept="image/*">
                                 </div>
                             </div>
                         </div>
@@ -233,14 +238,9 @@
                             </div>
                         </div>
 
-
-                        <!-- <div class="mb-3">
-                            <label for="vehiclePhoto" class="form-label">Vehicle Photo</label>
-                            <input type="file" class="form-control" accept="image/*">
-                        </div> -->
-
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ const axios = require('axios');
 exports.getAllOrders = async(req, res) => {
     try {
         const token = req.cookies.token;
+        console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/orders`, {
             headers: {
                 Authorization: `Bearer ${token}`
