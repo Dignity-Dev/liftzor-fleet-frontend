@@ -213,18 +213,25 @@
                             <label for="phoneNumber" class="form-label">Phone Number:</label>
                             <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control" required>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="emailAddress" class="form-label">Email Address:</label>
-                            <input type="email" name="emailAddress" class="form-control" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="emailAddress" class="form-label">Email Address:</label>
+                                    <input type="email" name="emailAddress" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password:</label>
+                                    <div class="position-relative">
+                                        <input type="password" id="password-input" name="password" class="form-control pe-5 password-input" placeholder="Enter password" required>
+                                        <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon">
+                                            <i class="ri-eye-fill align-middle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password:</label>
-                            <input type="password" id="password" name="password" class="form-control" required>
-                        </div>
-
-
                         <input type="text" id="userType" name="userType" class="form-control" value="driver" hidden>
 
 
@@ -236,7 +243,7 @@
         </div>
     </div>
 
-    <% if (typeof success !== 'undefined' && success) {%>
+    <% if (typeof success !=='undefined' && success) {%>
         <script>
             Swal.fire({
                 icon: 'success',
@@ -251,7 +258,7 @@
         <% } %>
 
             <!-- Show error message -->
-            <% if (typeof error !== 'undefined' && error) { %>
+            <% if (typeof error !=='undefined' && error) { %>
                 <script>
                     Swal.fire({
                         icon: 'error',
@@ -266,3 +273,24 @@
 
 </div>
 <!-- container-fluid -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const passwordInput = document.getElementById("password-input");
+        const toggleButton = document.getElementById("password-addon");
+
+        if (passwordInput && toggleButton) {
+            toggleButton.addEventListener("click", function() {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleButton.innerHTML = '<i class="ri-eye-off-fill align-middle"></i>'; // Change icon
+                } else {
+                    passwordInput.type = "password";
+                    toggleButton.innerHTML = '<i class="ri-eye-fill align-middle"></i>'; // Change icon back
+                }
+            });
+        } else {
+            console.error("Password input or toggle button not found.");
+        }
+    });
+</script>

@@ -10,7 +10,7 @@ exports.getAllVehicle = async(req, res) => {
                 Authorization: `Bearer ${token}`
             }
         });
-
+        console.log(token);
         // Check if the API call was successful (status code 200)
         if (response.status === 200) {
             const vehicle = response.data.data;
