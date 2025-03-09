@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
+// const session = require('express-session');
 
 // Load environment variables
 dotenv.config();
@@ -52,3 +53,9 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+
+// app.use((req, res, next) => {
+//     res.locals.user = req.session.user || null;
+//     next();
+// });

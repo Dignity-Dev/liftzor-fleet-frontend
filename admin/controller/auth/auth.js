@@ -76,8 +76,13 @@ exports.signin = async(req, res) => {
         const response = await axios.post(`${process.env.APP_URI}/fleet/login`, req.body);
 
         // Extract the accessToken from the response data
-        const accessToken = response.data.data.accessToken;
-
+        const {
+            accessToken,
+            user
+        } = response.data.data;
+        // if (!user) {
+        //     throw new Error("User data missing from response");
+        // }
         // Store the token in a cookie
         res.cookie('token', accessToken, {
             httpOnly: true,
@@ -85,7 +90,10 @@ exports.signin = async(req, res) => {
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
-        // Redirect to the dashboard
+        // Store user details in session
+        // req.session.user = user;
+
+
         res.redirect('/dashboard');
     } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);

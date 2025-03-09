@@ -42,7 +42,6 @@ exports.getAllVehicle = async(req, res) => {
     }
 };
 
-
 exports.getvehicleById = async(req, res) => {
     let vehicleId; // Declare vehicleId outside the try block so it's accessible everywhere
 
@@ -91,7 +90,6 @@ exports.getvehicleById = async(req, res) => {
         res.status(500).render('fleet/components/vehicle/view-vehicle', { vehicle: null, error: 'Error fetching vehicle details.' });
     }
 };
-
 
 exports.getNewVehicleForm = async(req, res) => {
     try {
