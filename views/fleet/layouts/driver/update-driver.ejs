@@ -12,13 +12,144 @@
                         <li class="breadcrumb-item active">Update Driver</li>
                     </ol>
                 </div>
-
             </div>
         </div>
     </div>
     <!-- end page title -->
 
     <div class="row">
+        <% if (error) { %>
+            <div class="error-message">
+                <div class="alert alert-danger" role="alert">
+                    <strong>Error:</strong>
+                    <%= error %>
+                </div>
+            </div>
+            <% } %>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex">
+                            <h4 class="card-title mb-0 flex-grow-1">Edit Driver Account</h4>
+                            <div class="flex-shrink-0">
+                                <button class="btn btn-primary" onclick="window.history.back()"><i class="ri-arrow-go-back-fill"></i> Back</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form action="/update-driver/<%= driver[0].userID %>" method="post" autocomplete="off" class="p-3">
+                                <input type="hidden" name="driverId" value="<%= driver[0].userID %>">
+
+                                <div class="mb-3">
+                                    <label for="fullName" class="form-label">Full Name:</label>
+                                    <input type="text" id="fullName" name="fullName" class="form-control" value="<%= driver[0].fullName %>" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="phoneNumber" class="form-label">Phone Number:</label>
+                                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control" value="<%= driver[0].phoneNumber %>" required>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="emailAddress" class="form-label">Email Address:</label>
+                                            <input type="email" name="emailAddress" class="form-control" value="<%= driver[0].emailAddress %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">New Password (optional):</label>
+                                            <div class="position-relative">
+                                                <input type="password" id="password-input" name="password" class="form-control pe-5 password-input" placeholder="Enter new password">
+                                                <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon">
+                                            <i class="ri-eye-fill align-middle"></i>
+                                        </button>
+                                            </div>
+                                            <small class="text-muted">Leave blank if you don't want to change the password.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '<%= success %>',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = '/manage-driver';
+            });
+        </script>
+        <% } %>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '<%= error %>',
+                    }).then(() => {
+                        window.location.href = '/update-driver/<%= driver[0].userID %>';
+                    });
+                </script>
+                <% } %>
+</div>
+<!-- container-fluid -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const passwordInput = document.getElementById("password-input");
+        const toggleButton = document.getElementById("password-addon");
+
+        if (passwordInput && toggleButton) {
+            toggleButton.addEventListener("click", function() {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleButton.innerHTML = '<i class="ri-eye-off-fill align-middle"></i>';
+                } else {
+                    passwordInput.type = "password";
+                    toggleButton.innerHTML = '<i class="ri-eye-fill align-middle"></i>';
+                }
+            });
+        } else {
+            console.error("Password input or toggle button not found.");
+        }
+    });
+</script>
+
+
+
+
+
+<!-- container-fluid -->
+<!-- <div class="container-fluid"> -->
+<!-- start page title -->
+<!-- <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
+                <h4 class="mb-sm-0">Update Driver</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Driver</a></li>
+                        <li class="breadcrumb-item active">Update Driver</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div> -->
+<!-- end page title -->
+
+<!-- <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header align-items-center d-flex">
@@ -29,7 +160,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="/drivers/<%=d river.id %>?_method=PATCH" method="post " enctype="multipart/form-data " autocomplete="off ">
+
+                    <form action="/drivers/<%=driver[0].id %>?_method=PATCH" method="post " enctype="multipart/form-data " autocomplete="off ">
                         <div class="row ">
                             <div class="col-md-6 ">
                                 <h5>Personal Information</h5>
@@ -38,7 +170,7 @@
                                         <div class="form-group ">
                                             <label for="name ">Fullname <span
                                                     class="text-danger ">*</span></label>
-                                            <input type="text " class="form-control " id="name " name="fullname " value="Olatunde Soliu " required>
+                                            <input type="text " class="form-control " id="name " name="fullname " value="<%= driver[0].fullName %>" required>
                                         </div>
                                     </div>
                                 </div>
@@ -178,7 +310,7 @@
                                     </div>
                                 </div>
                                 <!-- <h5>Account Information</h5> -->
-                                <!-- <div class="row ">
+<!-- <div class="row ">
                                     <div class="col-md-6 ">
                                         <div class="mb-3 ">
                                             <div class="form-group ">
@@ -196,21 +328,19 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <div class="row ">
-                                    <div class="col-md-12 mt-3 ">
-                                        <button name="updateDriver " class="btn btn-primary btn-block col-12 btn-lg "> Update Driver Account</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<!-- <div class="row ">
+        <div class="col-md-12 mt-3 ">
+            <button name="updateDriver " class="btn btn-primary btn-block col-12 btn-lg "> Update Driver Account</button>
         </div>
     </div>
-
-
-
-
 </div>
-<!-- container-fluid -->
+</div>
+</form>
+</div>
+</div>
+</div>
+</div> -->
+
+
+
+<!-- </div> -->
