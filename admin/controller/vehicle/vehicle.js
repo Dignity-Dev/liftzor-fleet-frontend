@@ -1,4 +1,6 @@
 const axios = require('axios');
+const FormData = require('form-data');
+// const fs = require('fs');
 
 // Fetch all vehicle from API
 
@@ -10,7 +12,7 @@ exports.getAllVehicle = async(req, res) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log(token);
+        // console.log(token);
         // Check if the API call was successful (status code 200)
         if (response.status === 200) {
             const vehicle = response.data.data;
@@ -93,34 +95,55 @@ exports.getvehicleById = async(req, res) => {
 
 exports.getNewVehicleForm = async(req, res) => {
     try {
-        // Extract token from request cookies
         const token = req.cookies.token;
 
-        // Log req.body to confirm if it contains data
-        console.log('Request Body:', req.body);
+        // console.log('Request Body:', req.body);
+        // console.log('Uploaded File:', req.file);
 
-        // Make a request to register the fleet
-        const response = await axios.post(`${process.env.APP_URI}/fleet/create-vehicle`, req.body, {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'File is required' });
+        }
+
+        // Prepare FormData
+        const formData = new FormData();
+        Object.keys(req.body).forEach((key) => {
+            formData.append(key, req.body[key]);
+        });
+
+        // Attach file (using the correct field name expected by the backend)
+        formData.append('vehiclePhoto', req.file.buffer, {
+            filename: req.file.originalname,
+            contentType: req.file.mimetype,
+        });
+
+        // console.log('Sending FormData to API...');
+
+        // Send request to backend
+        const response = await axios.post(`${process.env.APP_URI}/fleet/create-vehicle`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
+                ...formData.getHeaders(),
             },
         });
 
-        // After successful fleet registration, redirect to the dashboard
-        return res.redirect('/manage-vehicle');
+
+        const successMessage = response.data && response.data.message ?
+            response.data.message :
+            'Vehicle successfully registered';
+        return res.render('fleet/components/vehicle/new-vehicle', {
+            success: successMessage,
+        });
+
     } catch (error) {
-        // Handle errors during the fleet registration
+        console.error("Error details:", error.response ? error.response.data : error.message);
         const errorMessage = error.response && error.response.data && error.response.data.message ?
             error.response.data.message :
             'Vehicle registration failed';
-
-        return res.status(400).json({
-            success: false,
-            message: errorMessage,
+        return res.render('fleet/components/vehicle/new-vehicle', {
+            error: errorMessage,
         });
     }
 };
-
 
 exports.renderNewVehicleForm = (req, res) => {
     const token = req.cookies.token;

@@ -26,7 +26,7 @@
             <!-- Vehicle Section -->
             <div class="row">
                 <!-- Single vehicle Card -->
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-4 col-xl-4">
                     <div class="card bvehicle shadow-sm mb-4">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Vehicle ID: <strong> <%= vehicle[0].vehicleID %></strong></h5>
@@ -59,12 +59,29 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-8 col-xl-8">
+                    <!-- Image Card -->
                     <div class="card bvehicle shadow-sm mb-4">
                         <div class="card-body">
-                            <img src="<%= vehicle[0].vehiclePhoto %>" alt="" width="100%">
+                            <img src="<%= vehicle[0].vehiclePhoto %>" alt="Vehicle Image" width="100%" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal">
                         </div>
                     </div>
+
+                    <!-- Bootstrap Modal -->
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel">Vehicle Photo</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img id="modalImage" src="<%= vehicle[0].vehiclePhoto %>" alt="Vehicle Image" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <% } else { %>

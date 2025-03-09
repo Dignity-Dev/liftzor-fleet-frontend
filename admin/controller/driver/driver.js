@@ -59,36 +59,25 @@ exports.getAllDrivers = async(req, res) => {
 
 exports.getNewDriverForm = async(req, res) => {
     try {
-        // Extract token from cookies
         const token = req.cookies.token;
-        // Make a request to register the driver
         const response = await axios.post(`${process.env.APP_URI}/fleet/create-driver`, req.body, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
 
-        // console.log("API Response:", response.data);
-
-        // Success message from the API response
         const successMessage = response.data && response.data.message ?
             response.data.message :
             'Driver successfully registered';
-
-        // Pass success message to the frontend
         return res.render('fleet/components/driver/new-driver', {
             success: successMessage,
         });
 
     } catch (error) {
         console.error("Error details:", error.response ? error.response.data : error.message);
-
-        // Error message from the API response
         const errorMessage = error.response && error.response.data && error.response.data.message ?
             error.response.data.message :
             'Driver registration failed';
-
-        // Pass error message to the frontend
         return res.render('fleet/components/driver/new-driver', {
             error: errorMessage,
         });
@@ -109,10 +98,6 @@ exports.getDriverById = async(req, res) => {
     try {
         driverId = req.params.id; // Get driver ID from the route parameters
         const token = req.cookies.token; // Extract token from cookies
-
-        // console.log('Fetching driver with ID:', driverId); // Debug log for driver ID
-
-        // Fetch driver data from the external API using query parameters
         const response = await axios.get(`${process.env.APP_URI}/fleet/getOneDriver/${driverId}`, {
             headers: {
                 Authorization: `Bearer ${token}`, // Pass token in the headers
@@ -122,25 +107,17 @@ exports.getDriverById = async(req, res) => {
         const driver = response.data.data; // Access the driver data
 
         if (!driver || driver.length === 0) {
-            // console.log(`Driver with ID: ${driverId} not found.`);
             return res.status(404).render('fleet/components/driver/view-driver', { driver: null, error: 'Driver not found.' });
         }
-
-        // Render the driver details page with the retrieved data
-        // console.log('Driver fetched successfully:', driver);
         res.render('fleet/components/driver/view-driver', { driver, error: null });
 
     } catch (error) {
         console.error('Error fetching driver:', error.response ? error.response.data : error.message);
 
         if (error.response && error.response.status === 404) {
-            // console.log(`Driver with ID: ${driverId} not found.`); // Driver ID will now be accessible
             return res.status(404).render('fleet/components/driver/view-driver', { driver: null, error: 'Driver not found.' });
         }
-
-        // Handle token-related errors, such as expiration or invalid token
         if (error.response && error.response.status === 401) {
-            // console.log('Invalid or expired token, redirecting to sign-in page.');
             return res.redirect('/sign-in');
         }
 

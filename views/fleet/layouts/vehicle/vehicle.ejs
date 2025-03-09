@@ -66,7 +66,9 @@
                                                         <%= index + 1%>
                                                     </td>
                                                     <td>
-                                                        <%= vehicle.vehicleID %>
+                                                        <a href="/vehicle/<%= vehicle.vehicleID %>">
+                                                            <%= vehicle.vehicleID %>
+                                                        </a>
                                                     </td>
                                                     <td><img src="<%= vehicle.vehiclePhoto %>" alt="" class="avatar-xs rounded-circle material-shadow" /></td>
                                                     <td>
@@ -193,5 +195,3 @@
 
 
 </div>
-
-<!-- container-fluid -->
