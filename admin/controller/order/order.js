@@ -4,16 +4,13 @@ const axios = require('axios');
 exports.getAllOrders = async(req, res) => {
     try {
         const token = req.cookies.token;
-        console.log(token);
+        // console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/orders`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
         const orders = response.data.data;
-        if (!orders || orders.length === 0) {
-            return res.render('fleet/components/order/order', { orders: [], error: 'No orders available.' });
-        }
         // Sort the orders by 'createdAt' (either ascending or descending)
         const sortedOrders = orders.sort((a, b) => {
             // Assuming createdAt is in ISO format. Adjust if it's a different format.
@@ -24,7 +21,7 @@ exports.getAllOrders = async(req, res) => {
         if (error.response && error.response.status === 401) {
             return res.redirect('/sign-in');
         }
-        res.render('fleet/components/order/order', { orders: [], error: 'Error fetching orders.' });
+        res.render('fleet/components/order/order', { orders: [], error: 'No orders available.' });
     }
 };
 
@@ -35,26 +32,23 @@ exports.getOrderById = async(req, res) => {
     try {
         orderId = req.params.id; // Get order ID from the route parameters
         const token = req.cookies.token;
+        // console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/getOneOrder/${orderId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
 
-        const order = response.data.data;
-        if (!order) {
-            return res.status(404).render('fleet/components/order/view-order', { order: null, error: 'Order not found.' });
-        }
-
         res.render('fleet/components/order/view-order', { order, error: null });
     } catch (error) {
-        if (error.response && error.response.status === 404) {
-            return res.status(404).render('fleet/components/order/view-order', { order: null, error: 'Order not found.' });
-        }
-        if (error.response && error.response.status === 401) {
-            return res.redirect('/sign-in');
-        }
-        res.status(500).render('fleet/components/order/view-order', { order: null, error: 'Failed to fetch order.' });
+        console.error('Order Not Found', error.response ? error.response.data : error.message);
+
+        const errorMessage = error.response && error.response.data && error.response.data.message ?
+            error.response.data.message :
+            'An error occurred while fetching order, try again.';
+
+        return res.redirect(`/pending-order?status=error&message=${encodeURIComponent(errorMessage)}`);
+
     }
 };
 
@@ -102,10 +96,6 @@ exports.getPendingOrders = async(req, res) => {
         const response = await axios.get(`${process.env.APP_URI}/fleet/pending`);
 
         const pendingOrders = response.data.data;
-        if (!pendingOrders || pendingOrders.length == 0) {
-            return res.render('fleet/components/order/pending-order', { pendingOrders: [], error: 'No pending orders available.' });
-        }
-
         // Sort the orders by 'createdAt' (either ascending or descending)
         const sortedOrders = pendingOrders.sort((a, b) => {
             // Assuming createdAt is in ISO format. Adjust if it's a different format.
@@ -117,7 +107,7 @@ exports.getPendingOrders = async(req, res) => {
             return res.redirect('/sign-in'); // Redirect to sign-in on unauthorized access
         }
 
-        res.render('fleet/components/order/pending-order', { pendingOrders: [], error: 'Error fetching pending orders.' });
+        res.render('fleet/components/order/pending-order', { pendingOrders: [], error: 'No pending orders available.' });
     }
 };
 
@@ -139,10 +129,6 @@ exports.assignedOrders = async(req, res) => {
         // Sort orders by createdAt date in descending order (most recent first)
         orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        if (!orders || orders.length === 0) {
-            return res.render('fleet/components/order/assigned-order', { orders: [], error: 'No assigned orders available.' });
-        }
-
         // Render the assigned orders page with the filtered and sorted data
         res.render('fleet/components/order/assigned-order', { orders, error: null });
     } catch (error) {
@@ -150,6 +136,6 @@ exports.assignedOrders = async(req, res) => {
             return res.redirect('/sign-in'); // Redirect to sign-in on unauthorized access
         }
 
-        res.render('fleet/components/order/assigned-order', { orders: [], error: 'Error fetching assigned orders.' });
+        res.render('fleet/components/order/assigned-order', { orders: [], error: 'No assigned orders available.' });
     }
 }
