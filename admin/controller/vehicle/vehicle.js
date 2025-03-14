@@ -174,6 +174,30 @@ exports.assignVehicleToDriver = async(req, res) => {
     }
 };
 
+exports.deleteVehicle = async(req, res) => {
+    try {
+        const vehicleId = req.params.id;
+        const token = req.cookies.token;
+
+        const response = await axios.delete(`${process.env.APP_URI}/fleet/deleteVehicle/${vehicleId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        console.log(`Vehicle with ID ${vehicleId} deleted successfully.`);
+
+        // Redirect to manage-vehicle page with a success message
+        return res.redirect('/manage-vehicle?status=success&message=Vehicle successfully deleted');
+
+    } catch (error) {
+        console.error('Error deleting vehicle:', error.response ? error.response.data : error.message);
+
+        const errorMessage = error.response && error.response.data && error.response.data.message ?
+            error.response.data.message :
+            'An error occurred while deleting the vehicle.';
+
+        return res.redirect(`/manage-vehicle?status=error&message=${encodeURIComponent(errorMessage)}`);
+    }
+};
 
 
 // Render edit vehicle form with current vehicle details

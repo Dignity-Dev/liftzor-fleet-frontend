@@ -17,5 +17,6 @@ router.get('/new-vehicle', vehicleController.renderNewVehicleForm);
 router.get('/manage-vehicle', vehicleController.getAllVehicle);
 router.get('/vehicle/:id', vehicleController.getvehicleById);
 router.post('/assign-vehicle', vehicleController.assignVehicleToDriver);
+router.post('/delete-vehicle/:id', vehicleController.deleteVehicle);
 
 module.exports = router;

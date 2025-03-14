@@ -108,11 +108,11 @@
                                                                             class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                                         Edit</a></li> -->
                                                                 <li>
-                                                                    <button id="sa-warning" class="dropdown-item remove-item-btn">
-                                                                        <i
-                                                                            class="ri-delete-bin-fill align-bottom me-2 text-danger"></i>
-                                                                        Delete
-                                                                    </button>
+                                                                    <form action="/delete-vehicle/<%= vehicle.vehicleID %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this vehicle?');">
+                                                                        <button type="submit" class="dropdown-item remove-item-btn">
+                                                                            <i class="ri-delete-bin-fill align-bottom me-2 text-danger"></i> Delete
+                                                                        </button>
+                                                                    </form>
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -192,6 +192,25 @@
     </div>
     <!--end row-->
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Get query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const message = urlParams.get('message');
+
+        if (status && message) {
+            Swal.fire({
+                icon: status === 'success' ? 'success' : 'error',
+                title: status === 'success' ? 'Success' : 'Error',
+                text: message,
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Remove query parameters after showing alert
+                window.history.replaceState(null, null, window.location.pathname);
+            });
+        }
+    </script>
 
 
 </div>
