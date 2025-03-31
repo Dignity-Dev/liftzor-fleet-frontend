@@ -77,8 +77,7 @@ exports.signin = async(req, res) => {
 
         // Extract the accessToken from the response data
         const {
-            accessToken,
-            user
+            accessToken
         } = response.data.data;
         // if (!user) {
         //     throw new Error("User data missing from response");
