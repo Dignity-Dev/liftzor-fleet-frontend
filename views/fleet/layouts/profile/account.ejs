@@ -1,43 +1,76 @@
 <!-- container-fluid -->
-
 <style>
     .atm-card {
-        width: 100%;
-        max-width: 420px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, #0d6efd, #6610f2);
-        color: white;
-        padding: 30px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0 auto;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #0d6efd, #6610f2);
+      color: #ffffff;
+      padding: 35px 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
     }
 
     .atm-chip {
-        width: 50px;
-        height: 35px;
-        background-color: gold;
-        border-radius: 8px;
-        margin-bottom: 20px;
+      width: 60px;
+      height: 40px;
+      background: linear-gradient(45deg, gold, #f8e473);
+      border-radius: 10px;
+      margin-bottom: 30px;
     }
 
     .atm-account-number {
-        letter-spacing: 3px;
-        font-size: 1.4rem;
-        margin: 20px 0;
+      letter-spacing: 4px;
+      font-size: 1.8rem;
+      margin: 30px 0 15px;
+      font-weight: 600;
     }
 
     .atm-label {
-        font-size: 0.9rem;
-        opacity: 0.8;
+      font-size: 1rem;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .atm-footer {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      margin-top: 25px;
     }
-</style>
+
+    .atm-footer div {
+      text-align: left;
+    }
+
+    .atm-footer .balance {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .atm-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+      transform: rotate(25deg);
+      pointer-events: none;
+    }
+  </style>
+
 <div class="container-fluid">
 
     <!-- start page title -->
@@ -61,7 +94,7 @@
 
 
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-header align-items-center d-flex">
                     <h4 class="card-title mb-0 flex-grow-1">Account Management</h4>
@@ -74,38 +107,58 @@
                     <h4 class="mb-4">Your Bank Account</h4>
 
                     <% if (error) { %>
-                        <div class="alert alert-danger">
-                            <%= error %>
-                        </div>
-                        <% } else if (account) { %>
-                            <div class="atm-card">
-                                <div class="atm-chip"></div>
+                        <script>
+                            Swal.fire({
+                                icon: 'error',
+                                text: '<%= error %>',
+                            });
+                        </script>
+                        <% } %>
 
-                                <div class="atm-label">Bank</div>
-                                <div class="fw-bold fs-5 mb-2">
-                                    <%= account.bankName %>
-                                </div>
+                            <% if (success) { %>
+                                <script>
+                                    Swal.fire({
+                                        icon: 'success',
+                                        text: '<%= success %>',
+                                    });
+                                </script>
+                                <% } %>
 
-                                <div class="atm-label">Account Number</div>
-                                <div class="atm-account-number">
-                                    <%= account.accountNumber %>
-                                </div>
+                                    <% if (account && account.length> 0) { %>
+                                        <% const acc=account[0]; %> <!-- grab the first object -->
 
-                                <div class="atm-footer mt-4">
-                                    <div>
-                                        <div class="atm-label">Account Name</div>
-                                        <div>
-                                            <%= account.accountName %>
-                                        </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="atm-label">Type</div>
-                                        <div>Fleet Owner</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <% } %>
+                                            <div class="atm-card">
+                                                <div class="atm-chip"></div>
 
+                                                <div class="atm-label">Account Number</div>
+                                                <div class="atm-account-number">
+                                                    <%= acc.accountNumber || 'N/A' %>
+                                                </div>
+
+                                                <div class="atm-footer mt-4">
+                                                    <div>
+                                                        <div class="atm-label">Account Name</div>
+                                                        <div>
+                                                            <%= acc.accountName || acc.fullName || 'No Name' %>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="atm-label">Bank Name</div>
+                                                        <div>
+                                                            <%= acc.bankName || 'No Bank Name' %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <div class="atm-label">Balance</div>
+                                                        <div>₦<%= acc.balance ? acc.balance.toLocaleString() : '0' %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <% } else { %>
+                                                <p>No account details found!</p>
+                                                <% } %>
 
                 </div>
             </div>
@@ -122,23 +175,23 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <% if (success) { %>
-<script>
-  Swal.fire({
-    icon: 'success',
-    title: 'Success!',
-    text: "<%= success %>",
-    confirmButtonColor: '#198754',
-  });
-</script>
-<% } %>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: "<%= success %>",
+            confirmButtonColor: '#198754',
+        });
+    </script>
+    <% } %>
 
-<% if (error) { %>
-<script>
-  Swal.fire({
-    icon: 'error',
-    title: 'Error!',
-    text: "<%= error %>",
-    confirmButtonColor: '#dc3545',
-  });
-</script>
-<% } %>
+        <% if (error) { %>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "<%= error %>",
+                    confirmButtonColor: '#dc3545',
+                });
+            </script>
+            <% } %>

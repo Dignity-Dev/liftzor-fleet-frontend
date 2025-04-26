@@ -108,29 +108,33 @@ exports.getWithdrawals = async (req, res) => {
 };
 
 // Show Bank Account Info
+// View Account Details
 exports.viewAccountDetails = async (req, res) => {
-    
   try {
     const token = req.cookies.token;
-
-    const { data } = await axios.get(`${process.env.APP_URI}/profile/account`, {
+    const { data } = await axios.get(`${process.env.APP_URI}/fleet/getMyProfile`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    const accountData = data.data; // <<< take the array directly
+
+    //console.log('Account Data:', accountData); // good for debugging
+
     res.render('fleet/components/profile/account', {
-      account: data,
+      account: accountData, // pass array directly
       success: req.session.success || null,
-      error: req.session.error || null,
+      error: req.session.error || null
     });
 
     req.session.success = null;
     req.session.error = null;
 
   } catch (error) {
+    console.log('Error fetching account:', error?.response?.data || error.message);
     res.render('fleet/components/profile/account', {
-      account: null,
+      account: [],
       success: null,
-      error: 'Account not found',
+      error: 'Account not found!'
     });
   }
 };
