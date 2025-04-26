@@ -132,10 +132,21 @@
                 <li class="menu-title"><span data-key="t-menu">Other</span></li>
 
 
+                <li class="menu-title"><span data-key="t-menu">Profile</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="/update-profile">
-                        <i class="ri-settings-3-line"></i> <span data-key="t-logout">Profile Settings</span>
+                    <a class="nav-link menu-link" href="#sidebarProfile" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProfile">
+                        <i class="ri-user-6-line"></i> <span data-key="t-profile">Profile Management</span>
                     </a>
+                    <div class="collapse menu-dropdown" id="sidebarProfile">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="/add-account" class="nav-link" data-key="t-addAcccount"> Add Bank Account</a>
+                                <a href="/account" class="nav-link" data-key="t-Acccount"> My Account</a>
+                                <a href="/withdraw" class="nav-link" data-key="t-withdraw"> Withdraw Fund</a>
+                                <a href="/all-withdrawal" class="nav-link" data-key="t-allWithdrawal"> Withdrawal Management</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="/logout">

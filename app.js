@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
-// const session = require('express-session');
+const session = require('express-session');
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +19,11 @@ setupMiddleware(app);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
 // Static folder for assets
 app.use(express.static(path.join(__dirname, 'assets')));
 
@@ -31,6 +36,8 @@ const customerRoutes = require('./admin/routes/customer/customer');
 const orderRoutes = require('./admin/routes/order/order');
 const vehicleRoutes = require('./admin/routes/vehicle/vehicle');
 const paymentRoutes = require('./admin/routes/payment/payment');
+// const fleetRoutes = require('./admin/routes/fleet/fleet');
+const fleetProfileRoutes = require('./admin/routes/fleetprofileRoute');
 
 
 // Use Routes
@@ -41,6 +48,8 @@ app.use('/', customerRoutes);
 app.use('/', orderRoutes);
 app.use('/', vehicleRoutes);
 app.use('/', paymentRoutes);
+// app.use('/', fleetRoutes);
+app.use('/', fleetProfileRoutes);
 // end of admin route
 
 
