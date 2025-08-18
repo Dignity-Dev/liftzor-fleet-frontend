@@ -96,14 +96,23 @@
                                                             </button>
                                                             <ul class="dropdown-menu dropdown-menu-end">
                                                                 <li>
-                                                                    <button type="button" class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#zoomInModal"><i
+                                                                    <button type="button" class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#zoomInModal<%= vehicle.vehicleID %>"><i
                                                                             class="ri-ship-line align-bottom me-2 text-muted"></i>
                                                                         Assign Vehicle
+                                                                    </button>
+                                                                </li>
+                                                                <li>
+                                                                    <button type="button" class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#zoomInModa<%= vehicle.vehicleID %>"><i
+                                                                            class="ri-ship-line align-bottom me-2 text-muted"></i>
+                                                                        Unpair vehicle
                                                                     </button>
                                                                 </li>
                                                                 <li><a href="/vehicle/<%= vehicle.vehicleID %>" class="dropdown-item"><i
                                                                             class="ri-eye-fill align-bottom me-2 text-info"></i>
                                                                         View</a></li>
+                                                                <li><a href="/edit-vehicle/<%= vehicle.vehicleID %>" class="dropdown-item"><i
+                                                                            class="ri-eye-fill align-bottom me-2 text-info"></i>
+                                                                        Edit</a></li>
                                                                 <!-- <li><a href="/update-vehicle/:id" class="dropdown-item edit-item-btn"><i
                                                                             class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                                         Edit</a></li> -->
@@ -119,7 +128,7 @@
                                                     </td>
                                                 </tr>
                                                 <!-- Modal Blur -->
-                                                <div id="zoomInModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInModalLabel" aria-hidden="true" style="display: none;">
+                                                <div id="zoomInModal<%= vehicle.vehicleID %>" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInModalLabel" aria-hidden="true" style="display: none;">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -160,6 +169,66 @@
                                                                         <div class="row">
                                                                             <div class="mb-3">
                                                                                 <button type="submit" class="btn btn-primary btn-lg ">Assign
+                                                                                    Vehicle</button>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+
+                                                            </div>
+
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+
+
+                                                <div id="zoomInModa<%= vehicle.vehicleID %>" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInModalLabel" aria-hidden="true" style="display: none;">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="zoomInModalLabel">Unpair Vehicle
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-5">
+                                                                        <p><b>Vehicle No:</b>
+                                                                            <%= vehicle.vehicleRegNo %>
+                                                                        </p>
+                                                                        <p><b>Name:</b>
+                                                                            <%= vehicle.vehicleName %>
+                                                                        </p>
+                                                                        <p><b>Vehicle Type:</b>
+                                                                            <%= vehicle.vehicleType %>
+                                                                        </p>
+                                                                        <p><b>Vehicle ID:</b>
+                                                                            <%= vehicle.vehicleID %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="col-md-7">
+                                                                        <img src="<%= vehicle.vehiclePhoto %>" alt="" width="100%">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <h5>Unpair Vehicle from:</h5>
+                                                                    <form action="/unpair-vehicle" method="POST">
+                                                                        <input type="hidden" name="vehicleID" value="<%= vehicle.vehicleID %>">
+                                                                        <div class="mb-3">
+                                                                            <div class="form-group">
+                                                                                <label for="userID" class="form-label">Driver ID</label>
+                                                                                <input type="text" class="form-control" id="userID" name="userID" placeholder="RID-2345" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="mb-3">
+                                                                                <button type="submit" class="btn btn-primary btn-lg ">Unpair
                                                                                     Vehicle</button>
 
                                                                             </div>

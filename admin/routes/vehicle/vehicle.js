@@ -11,12 +11,18 @@ router.use(authorize);
 // Routes
 // router.post('/new-vehicle', vehicleController.getNewVehicleForm);
 // Use upload.single('file') to handle file uploads from the form
-router.post('/new-vehicle', upload.single('vehiclePhoto'), vehicleController.getNewVehicleForm);
+router.post('/new-vehicle', upload.fields([{ name: 'vehiclePhoto' }, { name: 'vehicleDocuments' }]), vehicleController.getNewVehicleForm);
 
 router.get('/new-vehicle', vehicleController.renderNewVehicleForm);
 router.get('/manage-vehicle', vehicleController.getAllVehicle);
 router.get('/vehicle/:id', vehicleController.getvehicleById);
 router.post('/assign-vehicle', vehicleController.assignVehicleToDriver);
+router.post('/unpair-vehicle', vehicleController.unpairVehicleToDriver);
+
+router.get('/edit-vehicle/:id', vehicleController.editVehicle);
+
+router.post('/edit-vehicle', vehicleController.updateVehicle);
+
 router.post('/delete-vehicle/:id', vehicleController.deleteVehicle);
 
 module.exports = router;

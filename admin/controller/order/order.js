@@ -1,4 +1,6 @@
 const axios = require('axios');
+
+// Fetch all orders from API
 exports.getAllOrders = async(req, res) => {
     try {
         const token = req.cookies.token;
@@ -9,8 +11,10 @@ exports.getAllOrders = async(req, res) => {
             }
         });
         const orders = response.data.data;
+        // Sort the orders by 'createdAt' (either ascending or descending)
         const sortedOrders = orders.sort((a, b) => {
-            return new Date(b.createdAt) - new Date(a.createdAt);
+            // Assuming createdAt is in ISO format. Adjust if it's a different format.
+            return new Date(b.createdAt) - new Date(a.createdAt); // descending order
         });
         res.render('fleet/components/order/order', { orders: sortedOrders, error: null });
     } catch (error) {
@@ -21,11 +25,12 @@ exports.getAllOrders = async(req, res) => {
     }
 };
 
+// Fetch an order by ID
 exports.getOrderById = async(req, res) => {
     let orderId;
 
     try {
-        orderId = req.params.id;
+        orderId = req.params.id; // Get order ID from the route parameters
         const token = req.cookies.token;
         // console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/getOneOrder/${orderId}`, {
@@ -33,7 +38,7 @@ exports.getOrderById = async(req, res) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-        const order = response.data.data;
+
         res.render('fleet/components/order/view-order', { order, error: null });
     } catch (error) {
         console.error('Order Not Found', error.response ? error.response.data : error.message);
@@ -60,11 +65,15 @@ exports.assignOrderToDriver = async(req, res) => {
 
         // Construct the API endpoint
         const apiUrl = `${process.env.APP_URI}/fleet/pairDriver?orderID=${orderID}&driverID=${driverID}`;
+
+        // Assign driver to order using a PUT request
         await axios.put(apiUrl, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
-        return res.redirect('/pending-order');
+
+        // Redirect to the manage orders page after successful assignment
+        return res.redirect('/pending-order'); // Adjust this path as necessary
 
     } catch (error) {
         if (error.message === 'Authorization Expired') {
@@ -114,12 +123,17 @@ exports.assignedOrders = async(req, res) => {
 
         let orders = response.data.data;
 
+        // Filter orders with status equal to "assigned"
         orders = orders.filter(order => order.status === 'assigned');
+
+        // Sort orders by createdAt date in descending order (most recent first)
         orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        // Render the assigned orders page with the filtered and sorted data
         res.render('fleet/components/order/assigned-order', { orders, error: null });
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            return res.redirect('/sign-in'); 
+            return res.redirect('/sign-in'); // Redirect to sign-in on unauthorized access
         }
 
         res.render('fleet/components/order/assigned-order', { orders: [], error: 'No assigned orders available.' });

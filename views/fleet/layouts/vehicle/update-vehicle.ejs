@@ -1,0 +1,88 @@
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
+                <h4 class="mb-sm-0">New Vehicle</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Vehicle</a></li>
+                        <li class="breadcrumb-item active">New Vehicle</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Update Vehicle</h4>
+                    <div class="flex-shrink-0">
+                        <button class="btn btn-primary" onclick="window.history.back()"><i
+                                class="ri-arrow-go-back-fill"></i> Back</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form action="/edit-vehicle" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vehicleName" class="form-label">Vehicle Name</label>
+                                    <input type="text" class="form-control" id="vehicleName" name="vehicleName" value="<%= vehicle[0].vehicleName %>" required>
+                                    <input type="hidden" class="form-control" id="vehicleID" name="vehicleID" value="<%= vehicle[0].vehicleID %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="vehicleColor" class="form-label">Vehicle Color</label>
+                                    <input type="text" class="form-control" id="vehicleColor" value="<%= vehicle[0].vehicleColor %>" name="vehicleColor">
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <button type="submit" class="btn btn-primary">Update Vehicle</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- container-fluid -->
+    <% if (typeof success !=='undefined' && success) {%>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '<%= success %>',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = '/manage-vehicle'; // Redirect after successful login
+            });
+        </script>
+        <% } %>
+
+            <!-- Show error message -->
+            <% if (typeof error !=='undefined' && error) { %>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '<%= error %>',
+                    }).then(() => {
+                        window.location.href = '/new-vehicle'; // Redirect after successful login
+                    });
+                </script>
+                <% } %>
+
+
+</div>

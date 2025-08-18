@@ -2,12 +2,11 @@ const axios = require('axios');
 const FormData = require('form-data');
 // const fs = require('fs');
 
-// Fetch all vehicle from API
 
 exports.getAllVehicle = async(req, res) => {
     try {
         const token = req.cookies.token;
-        const response = await axios.get(`${process.env.APP_URI}/fleet/getvehicles`, {
+        const response = await axios.get(`${process.env.APP_URI}/admin/getallvehicles`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -98,7 +97,7 @@ exports.getNewVehicleForm = async(req, res) => {
         // console.log('Request Body:', req.body);
         // console.log('Uploaded File:', req.file);
 
-        if (!req.file) {
+        if (!req.files) {
             return res.status(400).json({ success: false, message: 'File is required' });
         }
 
@@ -109,10 +108,28 @@ exports.getNewVehicleForm = async(req, res) => {
         });
 
         // Attach file (using the correct field name expected by the backend)
-        formData.append('vehiclePhoto', req.file.buffer, {
-            filename: req.file.originalname,
-            contentType: req.file.mimetype,
+       if (req.files.vehiclePhoto && req.files.vehiclePhoto[0]) {
+        const photo = req.files.vehiclePhoto[0];
+        formData.append('vehiclePhoto', photo.buffer, {
+            filename: photo.originalname,
+            contentType: photo.mimetype,
         });
+        }
+
+            // Append vehicle documents (can be multiple)
+            if (req.files.vehicleDocuments) {
+            req.files.vehicleDocuments.forEach((doc) => {
+                formData.append('vehicleDocuments', doc.buffer, {
+                filename: doc.originalname,
+                contentType: doc.mimetype,
+                });
+            });
+            }
+
+        // formData.append('vehicleDocuments', req.file.buffer, {
+        //     filename: req.file.originalname,
+        //     contentType: req.file.mimetype,
+        // });
 
         // console.log('Sending FormData to API...');
 
@@ -174,9 +191,40 @@ exports.assignVehicleToDriver = async(req, res) => {
     }
 };
 
-exports.deleteVehicle = async(req, res) => {
+
+exports.unpairVehicleToDriver = async(req, res) => {
     try {
-        const vehicleId = req.params.id;
+        const {userID } = req.body;
+        if (!userID) {
+            return res.status(400).json({ error: 'Both Vehicle ID and User ID are required.' });
+        }
+
+        const apiUrl = `${process.env.APP_URI}/fleet/unpair-vehicle`;
+        const token = req.cookies.token;
+        await axios.put(apiUrl, {userID}, {
+             headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        });
+
+        return res.redirect('/manage-vehicle');
+
+    } catch (error) {
+        if(error.status == 400) {
+            // alert of Vechicle is not pair with driver before
+            return res.redirect('/manage-vehicle');
+        }
+        console.error('Error unpairing vehicle:', error.message);
+        // return res.status(500).json({ error: 'Failed to unpair vehicle. Please try again later.' });
+        return res.redirect('/manage-vehicle');
+    }
+};
+
+exports.deleteVehicle = async(req, res) => {
+    let vehicleId
+    try {
+        vehicleId = req.params.id;
         const token = req.cookies.token;
 
         const response = await axios.delete(`${process.env.APP_URI}/fleet/deleteVehicle/${vehicleId}`, {
@@ -199,6 +247,62 @@ exports.deleteVehicle = async(req, res) => {
     }
 };
 
+exports.editVehicle = async(req, res) => {
+     let vehicleId;
+
+    try {
+        vehicleId = req.params.id;
+        const token = req.cookies.token;
+
+        const response = await axios.get(`${process.env.APP_URI}/fleet/get-one-vehicle/${vehicleId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+
+        const vehicle = response.data.data;
+
+        if (!vehicle || vehicle.length === 0) {
+            return res.status(404).render('fleet/components/vehicle/update-vehicle', { vehicle: null, error: 'vehicle not found.' });
+        }
+        res.render('fleet/components/vehicle/update-vehicle', { vehicle, error: null });
+
+    } catch (error) {
+        console.error('Error fetching vehicle:', error.response ? error.response.data : error.message);
+
+        if (error.response && error.response.status === 404) {
+            return res.status(404).render('fleet/components/vehicle/update-vehicle', { vehicle: null, error: 'vehicle not found.' });
+        }
+
+        if (error.response && error.response.status === 401) {
+            return res.redirect('/sign-in');
+        }
+        res.status(500).render('fleet/components/vehicle/update-vehicle', { vehicle: null, error: 'Error fetching vehicle details.' });
+    }
+}
+
+exports.updateVehicle = async(req, res) => {
+    try {
+
+        const token = req.cookies.token
+
+        const { vehicleName, vehicleColor, vehicleType, vehicleModel, vehicleRegNo, vehicleID } = req.body
+
+        const formData = { vehicleName, vehicleColor, vehicleID }
+        const response = await axios.put(`${process.env.APP_URI}/fleet/edit-vehicle/${vehicleID}`, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.redirect(`edit-vehicle/${vehicleID}`)
+        // res.send(response.data)
+
+    } catch (error) {
+         console.error("Error details:", error.response ? error.response.data : error.message);
+            return res.redirect(`edit-vehicle/${vehicleID}`)
+    }
+}
 
 // Render edit vehicle form with current vehicle details
 // exports.getUpdatevehicleForm = async(req, res) => {
