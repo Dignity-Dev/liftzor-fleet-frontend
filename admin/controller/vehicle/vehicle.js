@@ -6,16 +6,14 @@ const FormData = require('form-data');
 exports.getAllVehicle = async(req, res) => {
     try {
         const token = req.cookies.token;
-        const response = await axios.get(`${process.env.APP_URI}/admin/getallvehicles`, {
+        const response = await axios.get(`${process.env.APP_URI}/fleet/getvehicles`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        // console.log(token);
-        // Check if the API call was successful (status code 200)
         if (response.status === 200) {
             const vehicle = response.data.data;
-
+            // console.log(vehicle);
             if (!vehicle || vehicle.length === 0) {
                 return res.render('fleet/components/vehicle/vehicle', { vehicle: [], error: 'No vehicle available.' });
             }
@@ -28,9 +26,9 @@ exports.getAllVehicle = async(req, res) => {
     } catch (error) {
         if (error.response) {
             // Handle specific errors based on status code
-            if (error.response.status === 401) {
-                return res.redirect('/sign-in');
-            }
+            // if (error.response.status === 401) {
+            //     return res.redirect('/sign-in');
+            // }
             if (error.response.status === 404) {
                 return res.render('fleet/components/vehicle/vehicle', { vehicle: [], error: 'No vehicle available.' });
             }
@@ -42,26 +40,21 @@ exports.getAllVehicle = async(req, res) => {
 };
 
 exports.getvehicleById = async(req, res) => {
-    let vehicleId; // Declare vehicleId outside the try block so it's accessible everywhere
-
+    let vehicleId;
     try {
-        vehicleId = req.params.id; // Get vehicle ID from the route parameters
-        const token = req.cookies.token; // Extract token from cookies
-
-        // console.log('Fetching vehicle with ID:', vehicleId); // Debug log for vehicle ID
-
-        // Fetch vehicle data from the external API using query parameters
+        vehicleId = req.params.id;
+        const token = req.cookies.token;
         const response = await axios.get(`${process.env.APP_URI}/fleet/get-one-vehicle/${vehicleId}`, {
             headers: {
-                Authorization: `Bearer ${token}`, // Pass token in the headers
+                Authorization: `Bearer ${token}`,
             },
             params: {
-                userID: vehicleId, // Send userID as a query parameter
+                userID: vehicleId,
             }
         });
 
         const vehicle = response.data.data; // Access the vehicle data
-
+        // console.log(vehicle);
         if (!vehicle || vehicle.length === 0) {
             // console.log(`vehicle with ID: ${vehicleId} not found.`);
             return res.status(404).render('fleet/components/vehicle/view-vehicle', { vehicle: null, error: 'vehicle not found.' });
@@ -94,9 +87,6 @@ exports.getNewVehicleForm = async(req, res) => {
     try {
         const token = req.cookies.token;
 
-        // console.log('Request Body:', req.body);
-        // console.log('Uploaded File:', req.file);
-
         if (!req.files) {
             return res.status(400).json({ success: false, message: 'File is required' });
         }
@@ -126,13 +116,6 @@ exports.getNewVehicleForm = async(req, res) => {
             });
             }
 
-        // formData.append('vehicleDocuments', req.file.buffer, {
-        //     filename: req.file.originalname,
-        //     contentType: req.file.mimetype,
-        // });
-
-        // console.log('Sending FormData to API...');
-
         // Send request to backend
         const response = await axios.post(`${process.env.APP_URI}/fleet/create-vehicle`, formData, {
             headers: {
@@ -140,7 +123,6 @@ exports.getNewVehicleForm = async(req, res) => {
                 ...formData.getHeaders(),
             },
         });
-
 
         const successMessage = response.data && response.data.message ?
             response.data.message :
