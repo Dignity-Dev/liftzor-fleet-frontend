@@ -31,6 +31,29 @@ exports.signin = async(req, res) => {
 };
 
 
+
+
+exports.renderPasswordRecovery = (req, res) => {
+    res.render('fleet/components/reset-password', { error: null });
+};
+
+// Handle Sign-in
+exports.signin = async(req, res) => {
+    try {
+        await axios.post(`${process.env.APP_URI}/fleet/forgotPassword`, req.body);
+        res.redirect('/sign-in');
+    } catch (error) {
+        console.error('Error:', error.response ? error.response.data : error.message);
+
+        const errorMessage = (error.response && error.response.data && error.response.data.message) ?
+            error.response.data.message :
+            'Failed to send password reset email';
+        res.status(401).render('fleet/components/reset-password', { error: errorMessage });
+    }
+};
+
+
+
 // Logout Route
 exports.signOut = (req, res) => {
     res.clearCookie('token');

@@ -6,6 +6,7 @@ const FormData = require('form-data');
 exports.getAllVehicle = async(req, res) => {
     try {
         const token = req.cookies.token;
+        console.log(token);
         const response = await axios.get(`${process.env.APP_URI}/fleet/getvehicles`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -53,7 +54,7 @@ exports.getvehicleById = async(req, res) => {
             }
         });
 
-        const vehicle = response.data.data; // Access the vehicle data
+        const vehicle = response.data.data;
         // console.log(vehicle);
         if (!vehicle || vehicle.length === 0) {
             // console.log(`vehicle with ID: ${vehicleId} not found.`);

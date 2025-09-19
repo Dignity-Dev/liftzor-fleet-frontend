@@ -15,4 +15,7 @@ router.post('/sign-in', authController.signin);
 // Render the signout
 router.get('/logout', authController.signOut);
 
+// resetpassword
+router.get('/reset-password', authController.renderPasswordRecovery);
+
 module.exports = router;
