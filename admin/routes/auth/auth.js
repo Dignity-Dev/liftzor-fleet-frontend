@@ -7,9 +7,8 @@ const authController = require('../../controller/auth/auth');
 // Render the signin page
 router.get('/', authController.renderSignIn);
 
-router.get('/sign-in', authController.renderSignIn);
-
 // Handle the login
+router.get('/sign-in', authController.renderSignIn);
 router.post('/sign-in', authController.signin);
 
 // Render the signout
@@ -17,5 +16,8 @@ router.get('/logout', authController.signOut);
 
 // resetpassword
 router.get('/reset-password', authController.renderPasswordRecovery);
+router.post('/reset-password', authController.requestPasswordReset);
+
+
 
 module.exports = router;

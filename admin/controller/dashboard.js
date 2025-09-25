@@ -80,3 +80,25 @@ exports.renderProfile = async (req, res) => {
       });
     }
   };
+
+
+
+//change password
+exports.changePassword = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        if (!token) {
+            return res.status(401).render('fleet/components/sign-in', { error: 'Unauthorized access. Please log in.' });
+        }
+       const response = await axios.post(`${process.env.APP_URI}/fleet/changePassword`, req.body);
+        const successMessage = (response.data && response.data.message) ? response.data.message : 'Password changed successfully!';
+        res.render('fleet/components/profile', { success: successMessage, error: null });
+    } catch (error) {
+        console.error('Error:', error.response ? error.response.data : error.message);
+        const errorMessage = (error.response && error.response.data && error.response.data.message) ?
+            error.response.data.message :
+            'Failed to change password';
+
+        res.status(400).render('fleet/components/profile', { error: errorMessage, success: null });
+    }
+};

@@ -7,6 +7,9 @@ const authorize = require('../../utils/middleware/adminMiddleware');
 
 router.get('/dashboard', authorize, dashboardRouter.renderDashboard);
 router.get('/update-profile', authorize, dashboardRouter.renderProfile);
-// router.get('/settings', authorize, dashboardRouter.renderSettings);
+
+// change password
+// router.get('/change-password', authorize, dashboardRouter.renderChangePasswordPage);
+router.post('/change-password', authorize, dashboardRouter.changePassword);
 
 module.exports = router;

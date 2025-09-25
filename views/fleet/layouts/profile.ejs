@@ -1,28 +1,26 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Profile</h4>
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Profile</li>
-                    </ol>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+        <h4 class="mb-sm-0">Profile</h4>
+        <div class="page-title-right">
+          <ol class="breadcrumb m-0">
+            <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Profile</li>
+          </ol>
         </div>
+      </div>
     </div>
-    <!-- add account detailed, fetch the bank from api  -->
-   </div>
+  </div>
+  <!-- add account detailed, fetch the bank from api  -->
+</div>
 
 <style>
   .profile-card {
     background: #fff;
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    max-width: 600px;
-    margin: 0 auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
@@ -63,49 +61,147 @@
   }
 </style>
 
-<div class="container mt-5">
-  <div class="profile-card">
-    <div class="profile-header">
-      <h2><%= profile.fullName %></h2>
-      <p class="text-muted mb-0">Fleet ID: <%= profile.fleetID %></p>
-      <p class="text-muted">User Type: <%= profile.userType %></p>
+<div class="container-fluid">
+  <div class="row">
+    <h3 class="mb-4">Fleet Profile Details</h3>
+    <p class="text-muted">Manage and view your fleet account details below.</p>
+
+    <div class="col-md-7">
+      <div class="profile-card">
+        <div class="profile-header">
+          <h2>
+            <%= profile.fullName %>
+          </h2>
+          <p class="text-muted mb-0">Fleet ID: <%= profile.fleetID %>
+          </p>
+          <p class="text-muted">User Type: <%= profile.userType %>
+          </p>
+        </div>
+
+        <div class="profile-info">
+          <div>
+            <span class="label">Email Address:</span>
+            <span class="value">
+              <%= profile.emailAddress %>
+            </span>
+          </div>
+
+          <div>
+            <span class="label">Phone Number:</span>
+            <span class="value">
+              <%= profile.phoneNumber %>
+            </span>
+          </div>
+
+          <div>
+            <span class="label">Bank Name:</span>
+            <span class="value">
+              <%= profile.bankName %>
+            </span>
+          </div>
+
+          <div>
+            <span class="label">Account Number:</span>
+            <span class="value">
+              <%= profile.accountNumber %>
+            </span>
+          </div>
+
+          <div>
+            <span class="label">Account Name:</span>
+            <span class="value">
+              <%= profile.accountName %>
+            </span>
+          </div>
+
+          <div>
+            <span class="label">Balance:</span>
+            <span class="value">₦<%= profile.balance.toLocaleString() %></span>
+          </div>
+
+          <div>
+            <span class="label">Registered Date:</span>
+            <span class="value">
+              <%= new Date(profile.registerDate).toLocaleDateString() %>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="profile-info">
-      <div>
-        <span class="label">Email Address:</span>
-        <span class="value"><%= profile.emailAddress %></span>
-      </div>
 
-      <div>
-        <span class="label">Phone Number:</span>
-        <span class="value"><%= profile.phoneNumber %></span>
-      </div>
+    <!-- change password form -->
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Change Password</h4>
+          <form action="/change-password" method="POST">
 
-      <div>
-        <span class="label">Bank Name:</span>
-        <span class="value"><%= profile.bankName %></span>
-      </div>
-
-      <div>
-        <span class="label">Account Number:</span>
-        <span class="value"><%= profile.accountNumber %></span>
-      </div>
-
-      <div>
-        <span class="label">Account Name:</span>
-        <span class="value"><%= profile.accountName %></span>
-      </div>
-
-      <div>
-        <span class="label">Balance:</span>
-        <span class="value">₦<%= profile.balance.toLocaleString() %></span>
-      </div>
-
-      <div>
-        <span class="label">Registered Date:</span>
-        <span class="value"><%= new Date(profile.registerDate).toLocaleDateString() %></span>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">New Password</label>
+              <div class="position-relative">
+                <input type="password" id="password-input" name="password" minlength="8"
+                  class="form-control pe-5 password-input" placeholder="Enter password" required>
+                <button
+                  class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                  type="button" id="password-addon">
+                  <i class="ri-eye-fill align-middle"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Password</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
+
 </div>
+
+
+
+<% if (typeof success !=='undefined' && success) { %>
+  <script>
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: '<%= success %>',
+      showConfirmButton: true
+        });
+  </script>
+  <% } %>
+
+    <!-- Error message -->
+    <% if (typeof error !=='undefined' && error) { %>
+      <script>
+        Swal.fire({
+          icon: 'error',
+          title: 'Not Found!',
+          text: '<%= error %>',
+          showConfirmButton: true
+        });
+      </script>
+      <% } %>
+
+
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const passwordInput = document.getElementById("password-input");
+            const toggleButton = document.getElementById("password-addon");
+
+            if (passwordInput && toggleButton) {
+              toggleButton.addEventListener("click", function () {
+                if (passwordInput.type === "password") {
+                  passwordInput.type = "text";
+                  toggleButton.innerHTML = '<i class="ri-eye-off-fill align-middle"></i>'; // Change icon
+                } else {
+                  passwordInput.type = "password";
+                  toggleButton.innerHTML = '<i class="ri-eye-fill align-middle"></i>'; // Change icon back
+                }
+              });
+            } else {
+              console.error("Password input or toggle button not found.");
+            }
+          });
+        </script>
