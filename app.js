@@ -11,6 +11,7 @@ const app = express();
 
 // Import middleware
 const setupMiddleware = require('./utils/middleware/middleware');
+const profileFetcher = require('./utils/middleware/profileFetcher');
 
 // Set up middleware
 setupMiddleware(app);
@@ -27,6 +28,8 @@ app.use(session({
 // Static folder for assets
 app.use(express.static(path.join(__dirname, 'assets')));
 
+// profileFetcher
+app.use(profileFetcher);
 
 // Import Routes
 const authRoutes = require('./admin/routes/auth/auth');
