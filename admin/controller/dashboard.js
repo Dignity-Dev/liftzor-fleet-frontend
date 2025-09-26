@@ -72,7 +72,7 @@ exports.renderProfile = async (req, res) => {
         );
 
         const profile = data?.data?.[0] || null;
-        // console.log('Profile Data:', profile);
+        console.log('Profile Data:', profile);
         if (!profile) {
             return res.render('fleet/components/profile', {
                 profile: null,

@@ -22,23 +22,43 @@
       <div class="profile-card">
         <% if (profile) { %>
           <div class="profile-header">
-            <h2><%= profile.fullName || 'N/A' %></h2>
-            <p class="text-muted mb-0">Fleet ID: <%= profile.fleetID || 'N/A' %></p>
-            <p class="text-muted">User Type: <%= profile.userType || 'N/A' %></p>
+             <img class="rounded-circle"
+              src="<%= profile ? profile.passport : '/images/users/avatar-1.jpg' %>" alt="Profile Avatar" style="width: 100px; height: 100px; object-fit: cover; margin-bottom: 15px;">
+            <h2>
+              <%= profile.fullName || 'N/A' %>
+            </h2>
+            <p class="text-muted mb-0">Fleet ID: <%= profile.fleetID || 'N/A' %>
+            </p>
+            <p class="text-muted">User Type: <%= profile.userType || 'N/A' %>
+            </p>
+
           </div>
 
           <div class="profile-info">
-            <div><span class="label">Email Address:</span><span class="value"><%= profile.emailAddress || 'N/A' %></span></div>
-            <div><span class="label">Phone Number:</span><span class="value"><%= profile.phoneNumber || 'N/A' %></span></div>
-            <div><span class="label">Bank Name:</span><span class="value"><%= profile.bankName || 'N/A' %></span></div>
-            <div><span class="label">Account Number:</span><span class="value"><%= profile.accountNumber || 'N/A' %></span></div>
-            <div><span class="label">Account Name:</span><span class="value"><%= profile.accountName || 'N/A' %></span></div>
-            <div><span class="label">Balance:</span><span class="value">₦<%= profile.balance ? profile.balance.toLocaleString() : '0' %></span></div>
-            <div><span class="label">Registered Date:</span><span class="value"><%= profile.registerDate ? new Date(profile.registerDate).toLocaleDateString() : 'N/A' %></span></div>
+            <div><span class="label">Email Address:</span><span class="value">
+                <%= profile.emailAddress || 'N/A' %>
+              </span></div>
+            <div><span class="label">Phone Number:</span><span class="value">
+                <%= profile.phoneNumber || 'N/A' %>
+              </span></div>
+            <div><span class="label">Bank Name:</span><span class="value">
+                <%= profile.bankName || 'N/A' %>
+              </span></div>
+            <div><span class="label">Account Number:</span><span class="value">
+                <%= profile.accountNumber || 'N/A' %>
+              </span></div>
+            <div><span class="label">Account Name:</span><span class="value">
+                <%= profile.accountName || 'N/A' %>
+              </span></div>
+            <div><span class="label">Balance:</span><span class="value">₦<%= profile.balance ?
+                  profile.balance.toLocaleString() : '0' %></span></div>
+            <div><span class="label">Registered Date:</span><span class="value">
+                <%= profile.registerDate ? new Date(profile.registerDate).toLocaleDateString() : 'N/A' %>
+              </span></div>
           </div>
-        <% } else { %>
-          <div class="alert alert-warning">No profile information available.</div>
-        <% } %>
+          <% } else { %>
+            <div class="alert alert-warning">No profile information available.</div>
+            <% } %>
       </div>
     </div>
 
@@ -51,8 +71,10 @@
             <div class="mb-3">
               <label for="newPassword" class="form-label">New Password</label>
               <div class="position-relative">
-                <input type="password" id="password-input" name="Password" minlength="8" class="form-control pe-5" placeholder="Enter new password" required>
-                <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" id="password-addon">
+                <input type="password" id="password-input" name="Password" minlength="8" class="form-control pe-5"
+                  placeholder="Enter new password" required>
+                <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button"
+                  id="password-addon">
                   <i class="ri-eye-fill align-middle"></i>
                 </button>
               </div>
@@ -67,7 +89,7 @@
 
 
 <!-- SweetAlert for Success -->
-<% if (typeof success !== 'undefined' && success) { %>
+<% if (typeof success !=='undefined' && success) { %>
   <script>
     Swal.fire({
       icon: 'success',
@@ -76,76 +98,83 @@
       showConfirmButton: true
     });
   </script>
-<% } %>
+  <% } %>
 
-<!-- SweetAlert for Error -->
-<% if (typeof error !== 'undefined' && error) { %>
-  <script>
-    Swal.fire({
-      icon: 'error',
-      title: 'Error!',
-      text: '<%= error %>',
-      showConfirmButton: true
-    });
-  </script>
-<% } %>
+    <!-- SweetAlert for Error -->
+    <% if (typeof error !=='undefined' && error) { %>
+      <script>
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: '<%= error %>',
+          showConfirmButton: true
+        });
+      </script>
+      <% } %>
 
 
-<!-- Password Toggle Script -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const passwordInput = document.getElementById("password-input");
-    const toggleButton = document.getElementById("password-addon");
+        <!-- Password Toggle Script -->
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const passwordInput = document.getElementById("password-input");
+            const toggleButton = document.getElementById("password-addon");
 
-    if (passwordInput && toggleButton) {
-      toggleButton.addEventListener("click", function () {
-        if (passwordInput.type === "password") {
-          passwordInput.type = "text";
-          toggleButton.innerHTML = '<i class="ri-eye-off-fill align-middle"></i>';
-        } else {
-          passwordInput.type = "password";
-          toggleButton.innerHTML = '<i class="ri-eye-fill align-middle"></i>';
-        }
-      });
-    }
-  });
-</script>
+            if (passwordInput && toggleButton) {
+              toggleButton.addEventListener("click", function () {
+                if (passwordInput.type === "password") {
+                  passwordInput.type = "text";
+                  toggleButton.innerHTML = '<i class="ri-eye-off-fill align-middle"></i>';
+                } else {
+                  passwordInput.type = "password";
+                  toggleButton.innerHTML = '<i class="ri-eye-fill align-middle"></i>';
+                }
+              });
+            }
+          });
+        </script>
 
-<style>
-  .profile-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .profile-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .profile-header h2 {
-    font-weight: bold;
-  }
-  .profile-info {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .profile-info div {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.1rem;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-  }
-  .profile-info div:last-child {
-    border-bottom: none;
-  }
-  .label {
-    color: #6c757d;
-    font-weight: 600;
-  }
-  .value {
-    font-weight: 500;
-  }
-</style>
+        <style>
+          .profile-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          }
+
+          .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+          }
+
+          .profile-header h2 {
+            font-weight: bold;
+          }
+
+          .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+          }
+
+          .profile-info div {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.1rem;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+          }
+
+          .profile-info div:last-child {
+            border-bottom: none;
+          }
+
+          .label {
+            color: #6c757d;
+            font-weight: 600;
+          }
+
+          .value {
+            font-weight: 500;
+          }
+        </style>
