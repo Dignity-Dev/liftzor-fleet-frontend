@@ -206,3 +206,15 @@
 
 </div>
 <!-- container-fluid -->
+<!-- SweetAlert for Success -->
+<% if (typeof successMe !=='undefined' && successMe) { %>
+  <script>
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: '<%= successMe %>',
+      showConfirmButton: true
+    });
+  </script>
+<% } %>
+
